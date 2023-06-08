@@ -1,2 +1,2 @@
 #!/bin/bash
-printf "./, ../, "; ls -Ap | tr "\n" "," | sed "s/,\$/\n/" | sed "s/,/, /g"
+printf "./, ../, "; ls -1v --indicator-style=slash | grep -v /$ | sed -e :a -e "\$!N; s/\n/, /; ta"
