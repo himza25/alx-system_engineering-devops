@@ -13,3 +13,15 @@ This script prints the absolute path name of the current working directory.
 6-firstdirectory: This script creates a directory named my_first_directory in the /tmp/ directory.
 
 7-movethatfile: This script moves the file betty from /tmp/ to /tmp/my_first_directory.
+
+8-firstdelete: This script deletes the file betty from /tmp/my_first_directory.
+
+9-firstdirdeletion: This script deletes the directory my_first_directory from /tmp.
+
+10-back: This script changes the working directory to the previous one.
+
+11-lists: This script lists all files in the current directory and the parent of the working directory and the /boot directory, in long format.
+
+12-file_type: This script prints the type of the file named iamafile in the /tmp directory.
+
+13-symbolic_link: This script creates a symbolic link to /bin/ls, named __ls__, in the current working directory.
