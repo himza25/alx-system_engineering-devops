@@ -1,2 +1,2 @@
 #!/bin/bash
-result=$((36#$WATER + 36#$STIR)) printf "%s\n" "$(echo "obase=bestchol; $result" | bc)"
+echo "$((10#${!WATER}+10#${!STIR}))" | tr "0123456789ABC" "bestchol"
