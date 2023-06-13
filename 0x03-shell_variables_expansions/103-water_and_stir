@@ -1,2 +1,2 @@
 #!/bin/bash
-echo "$((10#${!WATER}+10#${!STIR}))" | tr "0123456789ABC" "bestchol"
+echo "${WATER//water/}" | tr "ewatr" "01234" | tr -d "\n" | tr "01234" "bestchol"
