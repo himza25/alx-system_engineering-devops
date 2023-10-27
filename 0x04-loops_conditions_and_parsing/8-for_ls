@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+# This script displays content of the current directory after the first dash
+
+for file in *; do
+    # Check if file is not a hidden file
+    if [[ ! $file =~ ^\..* ]]; then
+        # Cut the part of the name after the first dash
+        echo "${file#*-}"
+    fi
+done
