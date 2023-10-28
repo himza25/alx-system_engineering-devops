@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+# This script stops the process running 4-to_infinity_and_beyond
+
+pid=$(ps aux | grep '[4]-to_infinity_and_beyond' | awk '{print $2}')
+kill "$pid"
