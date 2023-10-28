@@ -1,8 +1,10 @@
 #!/usr/bin/env bash
 # Terminates 4-to_infinity_and_beyond process without using kill or killall
 
-pid=$(ps aux | grep '[4]-to_infinity_and_beyond' | awk '{print $2}')
-
-if [ -n "$pid" ]; then
-  pkill -f "4-to_infinity_and_beyond"
-fi
+for pid in /proc/*/cmdline; do
+  if grep -q '4-to_infinity_and_beyond' "$pid" 2>/dev/null; then
+    pid_number=$(basename "$(dirname "$pid")")
+    echo "Terminating process with PID $pid_number"
+    kill -TERM "$pid_number"
+  fi
+done
