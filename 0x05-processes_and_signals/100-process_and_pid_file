@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Handles various signals and writes PID to /var/run/myscript.pid
+
+# Create PID file
+echo $$ > /var/run/myscript.pid
+
+# Define functions for trap
+handle_term() {
+  echo "I hate the kill command"
+  rm -f /var/run/myscript.pid
+  exit 0
+}
+
+handle_int() {
+  echo "Y U no love me?!"
+}
+
+handle_quit() {
+  echo "Quitting..."
+  rm -f /var/run/myscript.pid
+  exit 0
+}
+
+# Set trap for signals
+trap 'handle_term' SIGTERM
+trap 'handle_int' SIGINT
+trap 'handle_quit' SIGQUIT
+
+# Main loop
+while true; do
+  echo "To infinity and beyond"
+  sleep 2
+done
