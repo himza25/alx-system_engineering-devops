@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
-# Script to stop 4-to_infinity_and_beyond process without using kill or killall
+# Stops the 4-to_infinity_and_beyond process without using kill or killall
 
-for pid in /proc/*/cmdline; do
-  if grep -q '4-to_infinity_and_beyond' "$pid" 2>/dev/null; then
-    pid_number=$(basename "$(dirname "$pid")")
-    echo "Terminating process with PID $pid_number"
-    echo -n "15" > "/proc/$pid_number/oom_score_adj" # Adjust oom_score_adj to make it a candidate for termination
-  fi
-done
+# shellcheck disable=SC2039  # pkill is not part of POSIX, but we can disable that check
+pkill -f 4-to_infinity_and_beyond
