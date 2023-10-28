@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 # This script lists all processes for all users in a user-oriented format and displays process hierarchy.
 
-ps -efH
+ps auxf -A
