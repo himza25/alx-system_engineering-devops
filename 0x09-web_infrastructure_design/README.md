@@ -18,7 +18,7 @@ A basic web infrastructure was designed to be hosted on a single server. This de
 - Downtime during maintenance
 - Inability to scale under high traffic
 
-![Simple Web Stack Diagram](https://imgur.com/aZvbFt0)
+![Simple Web Stack Diagram](https://i.imgur.com/aZvbFt0.jpg)
 
 ### 1. Distributed Web Infrastructure
 This task extends the simple web stack into a distributed three-server setup with the following additions:
@@ -35,7 +35,7 @@ This task extends the simple web stack into a distributed three-server setup wit
 - Security issues without firewalls and HTTPS
 - Lack of monitoring
 
-![Distributed Web Infrastructure Diagram](https://imgur.com/zqmU0oU)
+![Distributed Web Infrastructure Diagram](https://i.imgur.com/zqmU0oU.jpg)
 
 ### 2. Secured and Monitored Web Infrastructure
 The infrastructure is further enhanced for security and monitoring with these components:
@@ -53,7 +53,7 @@ The infrastructure is further enhanced for security and monitoring with these co
 - Risks of a single writable MySQL server
 - Challenges with identical servers
 
-![Secured and Monitored Web Infrastructure Diagram](https://imgur.com/ZPJk897)
+![Secured and Monitored Web Infrastructure Diagram](https://i.imgur.com/ZPJk897.jpg)
 
 ### 3. Scale Up
 The advanced task involves scaling up the infrastructure by adding more servers and splitting components for better performance and reliability:
@@ -63,4 +63,4 @@ The advanced task involves scaling up the infrastructure by adding more servers 
 **Objective**:
 - Explain the need for each additional element and its purpose.
 
-![Scaled Up Infrastructure Diagram](https://imgur.com/RyMZ883)
+![Scaled Up Infrastructure Diagram](https://i.imgur.com/RyMZ883.jpg)
