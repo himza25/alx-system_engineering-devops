@@ -1,6 +1,7 @@
-# Puppet manifest to create a file at /tmp/school with specific properties
+# This Puppet manifest creates a file /tmp/school with specific properties
+
 file { '/tmp/school':
-  ensure  => present,
+  ensure  => 'file',
   mode    => '0744',
   owner   => 'www-data',
   group   => 'www-data',
