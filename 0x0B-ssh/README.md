@@ -12,11 +12,6 @@ This repository contains various scripts and configurations for managing SSH con
 - The first line of all Bash scripts: `#!/usr/bin/env bash`
 - The second line of all Bash scripts contains a comment explaining the script
 
-## Server Information
-
-| Name          | Username | IP Address    | State   |
-|---------------|----------|---------------|---------|
-| 420856-web-01 | ubuntu   | 3.85.168.165  | running |
 
 ## Tasks
 
@@ -58,11 +53,11 @@ Each script or configuration file has specific usage instructions. Generally, fo
 chmod +x script_name.sh
 ./script_name.sh
 
-#### For the Puppet manifest, apply it with:
+# For the Puppet manifest, apply it with:
 
 sudo puppet apply 100-puppet_ssh_config.pp
+```
 
-
-## 5. Author
+## 5. AUTHOR
 
 Samari Hamza
