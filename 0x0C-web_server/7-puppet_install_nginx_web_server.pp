@@ -1,6 +1,6 @@
 # Puppet Manifest for Nginx Setup
 
-# Ensure Nginx is installed on the system
+# Ensure Nginx is installed
 package { 'nginx':
   ensure => installed,
 }
@@ -12,7 +12,7 @@ file { '/var/www/html/index.html':
   require => Package['nginx'], # Ensure Nginx is installed before modifying files
 }
 
-# Configure the Nginx to perform 301 redirect for '/redirect_me'
+# Configure Nginx to perform 301 redirect for '/redirect_me'
 file_line { 'nginx_redirect_me':
   path   => '/etc/nginx/sites-available/default',
   line   => '        location /redirect_me { return 301 https://www.youtube.com/watch?v=QH2-TGUlwu4; }',
@@ -22,7 +22,7 @@ file_line { 'nginx_redirect_me':
   notify => Service['nginx'],  # Notify Nginx service to restart after change
 }
 
-# Manage the Nginx service, ensuring it is running
+# Manage the Nginx service, ensuring it is running and enabled
 service { 'nginx':
   ensure => running,
   enable => true,
