@@ -1,8 +1,15 @@
 #!/usr/bin/env bash
-# installs nginx and configures it on a remote server
+# Installs and configures Nginx to serve a "Hello World" page
 
-apt-get -y update
-apt-get -y install nginx
-ufw allow 'Nginx HTTP'
-echo 'Hello World!' > /var/www/html/index.nginx-debian.html
-service nginx start
+# Install Nginx
+apt-get update
+apt-get install nginx -y
+
+# Create and write the HTML file
+echo "Hello World!" > /var/www/html/index.html
+
+# Configure Nginx to listen on port 80
+sed -i 's/listen 80 default_server;/listen 80;/' /etc/nginx/sites-available/default
+
+# Restart Nginx (without using systemctl)
+service nginx restart
