@@ -1,3 +1,4 @@
 #!/usr/bin/env bash
-# Run:
+# Start Apache and check its status
 sudo service apache2 start
+sudo service apache2 status | grep "apache2 is running"
