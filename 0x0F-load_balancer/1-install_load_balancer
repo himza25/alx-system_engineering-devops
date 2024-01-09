@@ -1,47 +1,41 @@
 #!/usr/bin/env bash
-# Script to set up HAProxy on the lb-01 server.
+# Script to set up and configure HAProxy on the lb-01 server for load balancing.
 
-# Update packages and install HAProxy
-echo "Updating packages and installing HAProxy..."
+# Update package list and install HAProxy
+echo "Preparing to install HAProxy..."
 sudo apt-get update
 sudo apt-get install -y haproxy
 
-# Configure HAProxy for load balancing between web-01 and web-02
-echo "Configuring HAProxy for load balancing..."
+# Configure HAProxy to balance traffic between web-01 and web-02
+echo "Configuring HAProxy for load balancing between web servers..."
 
-# Create HAProxy configuration
-haproxy_conf="global
-    log /dev/log local0
-    log /dev/log local1 notice
-    chroot /var/lib/haproxy
-    stats timeout 30s
-    user haproxy
-    group haproxy
-    daemon
+# Append configuration to HAProxy
+lb_config="
 
-defaults
-    log     global
-    mode    http
-    option  httplog
-    timeout connect 5000ms
-    timeout client  50000ms
-    timeout server  50000ms
-
-frontend http_frontend
+# Frontend definition
+frontend main_front
     bind *:80
-    default_backend servers
+    mode http
+    default_backend web_backend
 
-backend servers
+# Backend configuration
+backend web_backend
     balance roundrobin
     server 420856-web-01 3.85.168.165:80 check
-    server 420856-web-02 100.24.72.68:80 check"
+    server 420856-web-02 100.24.72.68:80 check
+"
 
-# Write the new configuration to HAProxy config file
-echo "$haproxy_conf" | sudo tee /etc/haproxy/haproxy.cfg > /dev/null
+echo "$lb_config" | sudo tee -a /etc/haproxy/haproxy.cfg
 
-# Enable and restart HAProxy to apply changes
-echo "Enabling and restarting HAProxy..."
-sudo systemctl enable haproxy
-sudo systemctl restart haproxy
+# Enable HAProxy to be started by the init script
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
 
-echo "HAProxy setup complete."
+# Validate HAProxy configuration
+echo "Validating HAProxy configuration..."
+sudo haproxy -c -f /etc/haproxy/haproxy.cfg
+
+# Restart HAProxy to apply changes
+echo "Restarting HAProxy service..."
+sudo service haproxy restart
+
+echo "HAProxy setup is now complete."
