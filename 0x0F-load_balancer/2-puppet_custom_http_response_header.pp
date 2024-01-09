@@ -1,38 +1,30 @@
-# Puppet script to set up Nginx with a custom HTTP header
+# Puppet script to automate the installation and configuration of Nginx. 
+# It updates the system, installs Nginx, configures a custom HTTP header, and restarts Nginx.
 
-class nginx_setup {
-
-  exec { 'update_packages':
-    command  => '/usr/bin/apt-get -y update',
-    path     => '/usr/bin:/bin',
-    logoutput => true,
-    before   => Exec['install_nginx'],
-  }
-
-  exec { 'install_nginx':
-    command  => '/usr/bin/apt-get -y install nginx',
-    path     => '/usr/bin:/bin',
-    logoutput => true,
-    unless   => '/usr/bin/dpkg -l | /bin/grep nginx',
-    require  => Exec['update_packages'],
-    before   => Exec['configure_nginx'],
-  }
-
-  exec { 'configure_nginx':
-    command  => "sed -i 's/include \\/etc\\/nginx\\/sites-enabled\\/*;/include \\/etc\\/nginx\\/sites-enabled\\/*;\\n\\tadd_header X-Served-By \"\$HOSTNAME\";/' /etc/nginx/nginx.conf",
-    path     => '/usr/bin:/bin',
-    logoutput => true,
-    unless   => "grep -q 'X-Served-By' /etc/nginx/nginx.conf",
-    require  => Exec['install_nginx'],
-    notify   => Service['nginx_service'],
-  }
-
-  service { 'nginx_service':
-    ensure    => running,
-    enable    => true,
-    hasstatus => true,
-    subscribe => Exec['configure_nginx'],
-  }
+# Update the system's package list
+exec {'update':
+  provider => shell,
+  command  => 'sudo apt-get -y update',
+  before   => Exec['install Nginx'],
 }
 
-include nginx_setup
+# Install Nginx if it's not already installed
+exec {'install Nginx':
+  provider => shell,
+  command  => 'sudo apt-get -y install nginx',
+  before   => Exec['add_header'],
+}
+
+# Add a custom HTTP header 'X-Served-By' to the Nginx configuration
+exec { 'add_header':
+  provider    => shell,
+  environment => ["HOST=${hostname}"],
+  command     => 'sudo sed -i "s/include \/etc\/nginx\/sites-enabled\/\*;/include \/etc\/nginx\/sites-enabled\/\*;\n\tadd_header X-Served-By \"$HOST\";/" /etc/nginx/nginx.conf',
+  before      => Exec['restart Nginx'],
+}
+
+# Restart Nginx to apply the new configuration
+exec { 'restart Nginx':
+  provider => shell,
+  command  => 'sudo service nginx restart',
+}
