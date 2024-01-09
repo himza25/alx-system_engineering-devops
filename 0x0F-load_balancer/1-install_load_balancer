@@ -33,8 +33,8 @@ frontend http_front
 
 backend http_back
     balance roundrobin
-    server web-01 3.85.168.165:80 check
-    server web-02 100.24.72.68:80 check
+    server 420856-web-01 3.85.168.165:80 check
+    server 420856-web-02 100.24.72.68:80 check
 EOF
 
 # Restart and enable HAProxy to apply the configuration
