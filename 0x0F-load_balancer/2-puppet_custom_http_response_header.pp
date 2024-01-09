@@ -1,28 +1,25 @@
-#!/usr/bin/env bash
-# custom header using puppet
+# Installs a Nginx server with custom HTTP header
 
-exec { 'update server':
-  command  => 'sudo apt -y update',
-  path     => ['/bin', '/usr/bin', '/usr/sbin'],
+exec {'update':
+  provider => shell,
+  command  => 'sudo apt-get -y update',
+  before   => Exec['install Nginx'],
 }
-->
-exec { 'upgrade server':
-  command  => 'sudo apt -y upgrade',
-  path    => ['/bin', '/usr/bin', '/usr/sbin'],
+
+exec {'install Nginx':
+  provider => shell,
+  command  => 'sudo apt-get -y install nginx',
+  before   => Exec['add_header'],
 }
-->
-package { 'nginx':
-  ensure   => installed,
+
+exec { 'add_header':
+  provider    => shell,
+  environment => ["HOST=${hostname}"],
+  command     => 'sudo sed -i "s/include \/etc\/nginx\/sites-enabled\/\*;/include \/etc\/nginx\/sites-enabled\/\*;\n\tadd_header X-Served-By \"$HOST\";/" /etc/nginx/nginx.conf',
+  before      => Exec['restart Nginx'],
 }
-->
-file_line { 'add custom header':
-  ensure  => 'present',
-  path    => '/etc/nginx/sites-available/default',
-  after   => 'listen 80 default_server;',
-  line    => 'add_header X-Served-By $HOSTNAME;'
-}
-->
-exec { 'nginx':
+
+exec { 'restart Nginx':
+  provider => shell,
   command  => 'sudo service nginx restart',
-  path     => ['/bin', '/usr/bin', '/usr/sbin'],
 }
