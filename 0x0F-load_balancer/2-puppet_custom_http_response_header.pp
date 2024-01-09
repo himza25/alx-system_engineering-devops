@@ -1,3 +1,6 @@
+#!/usr/bin/env bash
+# custom header using puppet
+
 class nginx_custom_header {
   
   # Ensure Nginx is installed
