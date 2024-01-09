@@ -1,5 +1,5 @@
 class nginx_custom_header {
-
+  
   # Ensure Nginx is installed
   package { 'nginx':
     ensure => installed,
@@ -7,25 +7,18 @@ class nginx_custom_header {
 
   # Start and enable Nginx service
   service { 'nginx':
-    ensure     => running,
-    enable     => true,
-    require    => Package['nginx'],
+    ensure  => running,
+    enable  => true,
+    require => Package['nginx'],
   }
 
-  # Define the custom header configuration
-  file_line { 'nginx_custom_header':
-    path    => '/etc/nginx/sites-available/default',
-    line    => '    add_header X-Served-By $hostname;',
-    match   => '^    # add_header X-Served-By',
+  # Configure Nginx to add a custom HTTP header
+  exec { 'insert_header':
+    command => "sed -i '/^\s*server_name/a \\\tadd_header X-Served-By \$hostname;' /etc/nginx/sites-available/default",
+    path    => '/bin:/usr/bin:/sbin:/usr/sbin',
+    onlyif  => "test $(grep -c 'X-Served-By' /etc/nginx/sites-available/default) -eq 0",
     require => Package['nginx'],
     notify  => Service['nginx'],
-  }
-
-  # Restart Nginx to apply the changes
-  exec { 'nginx_restart':
-    command     => '/usr/sbin/service nginx restart',
-    refreshonly => true,
-    subscribe   => File_line['nginx_custom_header'],
   }
 }
 
