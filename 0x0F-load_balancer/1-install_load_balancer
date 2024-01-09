@@ -1,45 +1,32 @@
-#!/bin/bash
-# Install and configure HAProxy on lb-01 server
+#!/usr/bin/env bash
+# Create a script to install and configure HAProxy on lb-01 server
+# Configure HAProxy to send traffic to web-01 and web-02 servers
+# Distribute requests using a roundrobin algorithm
+# Make sure that HAProxy can be managed via an init script
 
-# Install HAProxy
-echo "Installing HAProxy..."
-sudo apt-get update
-sudo apt-get install -y haproxy
+# Install and configure HAproxy on my lb-01 server.
+sudo apt-get -y update
+apt-get -y install haproxy
 
-# Configure HAProxy
-echo "Configuring HAProxy..."
-sudo tee /etc/haproxy/haproxy.cfg <<EOF
-global
-    log /dev/log local0
-    log /dev/log local1 notice
-    chroot /var/lib/haproxy
-    user haproxy
-    group haproxy
-    daemon
+# edit config file
+server_config=\
+"
+frontend  besthor_frontend
+        bind *:80
+        mode http
+        default_backend besthor_backend
+backend besthor_backend
+        balance roundrobin
+        server 420856-web-01 3.85.168.165:80 check
+        server 420856-web-02 100.24.72.68:80 check
+"
+echo "$server_config" | sudo tee -a /etc/haproxy/haproxy.cfg
 
-defaults
-    log     global
-    mode    http
-    option  httplog
-    option  dontlognull
-    timeout connect 5000ms
-    timeout client  50000ms
-    timeout server  50000ms
+# enable haproxy to be started by init script
+echo "ENABLED=1" | sudo tee -a /etc/default/haproxy
 
-frontend http_front
-    bind *:80
-    stats uri /haproxy?stats
-    default_backend http_back
+# Testing the HAproxy configuration file
+sudo haproxy -c -f /etc/haproxy/haproxy.cfg
 
-backend http_back
-    balance roundrobin
-    server 420856-web-01 3.85.168.165:80 check
-    server 420856-web-02 100.24.72.68:80 check
-EOF
-
-# Restart and enable HAProxy to apply the configuration
-echo "Restarting and enabling HAProxy..."
-sudo systemctl restart haproxy
-sudo systemctl enable haproxy
-
-echo "HAProxy installation and configuration complete."
+# Restart the Nginx service
+sudo service haproxy restart
