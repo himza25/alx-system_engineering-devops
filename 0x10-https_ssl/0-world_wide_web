@@ -1,14 +1,36 @@
 #!/usr/bin/env bash
-# bash script displays subdomains status
+# Script to display information about subdomains of a given domain
 
-getStatus() {
-    dig "$1" | awk -v subdomain="$2" -F" " '/ANSWER SECTION:/ { getline; print "The subdomain " subdomain " is a " $4 " record and points to " $5 }'
+# Function to get DNS record information
+get_dns_record() {
+    local subdomain=$1
+    local domain=$2
+    local record
+
+    # Using dig to get the A record of the subdomain
+    record=$(dig +short "$subdomain.$domain" A)
+    if [[ -n $record ]]; then
+        echo "The subdomain $subdomain is a A record and points to $record"
+    else
+        echo "No A record found for $subdomain.$domain"
+    fi
 }
 
-if (($# == 2)); then
-    getStatus "$2.$1" "$2"
+# Main script logic
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 domain [subdomain]"
+    exit 1
+fi
+
+domain=$1
+
+if [ $# -eq 2 ]; then
+    # If subdomain is provided
+    subdomain=$2
+    get_dns_record "$subdomain" "$domain"
 else
-    for subdomain in www lb-01 web-01 web-02; do
-        getStatus "${subdomain}.$1" "$subdomain"
+    # If only domain is provided, check for default subdomains
+    for sub in www lb-01 web-01 web-02; do
+        get_dns_record "$sub" "$domain"
     done
 fi
