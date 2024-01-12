@@ -1,0 +1,48 @@
+#!/usr/bin/env bash
+
+global
+    log /dev/log local0
+    log /dev/log local1 notice
+    chroot /var/lib/haproxy
+    user haproxy
+    group haproxy
+    daemon
+    tune.ssl.default-dh-param 2048
+    ssl-dh-param-file /etc/haproxy/dhparams.pem
+
+defaults
+    log     global
+    mode    http
+    option  httplog
+    option  dontlognull
+    timeout connect 5000ms
+    timeout client  50000ms
+    timeout server  50000ms
+
+# Frontend for HTTP - Listen on port 80 and redirect to HTTPS
+frontend http_front
+    bind *:80
+    stats uri /haproxy?stats
+    acl is_holberton hdr(host) -i www.futurecoders.tech
+    http-request redirect scheme https if !{ ssl_fc } is_holberton
+
+# Frontend for HTTPS - Listen on port 443
+frontend https_front
+    bind *:443 ssl crt /etc/haproxy/certs/www.futurecoders.tech.pem
+    http-request add-header X-Forwarded-Proto https
+    acl is_root path -i /
+    acl is_holberton hdr(host) -i www.futurecoders.tech
+    use_backend www-backend if is_root is_holberton
+    default_backend http_back
+
+# Backend for HTTP requests
+backend http_back
+    balance roundrobin
+    server 420856-web-01 3.85.168.165:80 check
+    server 420856-web-02 100.24.72.68:80 check
+
+# Backend for HTTPS requests
+backend www-backend
+    balance roundrobin
+    server 420856-web-01 3.85.168.165:80 check
+    server 420856-web-02 100.24.72.68:80 check
