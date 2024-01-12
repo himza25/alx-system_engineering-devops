@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 global
     log /dev/log local0
     log /dev/log local1 notice
@@ -7,6 +5,8 @@ global
     user haproxy
     group haproxy
     daemon
+    tune.ssl.default-dh-param 2048
+    ssl-dh-param-file /etc/haproxy/dhparams.pem
 
 defaults
     log     global
@@ -27,8 +27,8 @@ frontend http_front
 
 # Frontend for HTTPS - Listen on port 443
 frontend https_front
-    bind *:443 ssl crt /etc/letsencrypt/live/www.futurecoders.tech/fullchain.pem privkey /etc/letsencrypt/live/www.futurecoders.tech/privkey.pem
-    reqadd X-Forwarded-Proto:\ https
+    bind *:443 ssl crt /etc/haproxy/certs/www.futurecoders.tech.pem
+    http-request add-header X-Forwarded-Proto https
     acl is_root path -i /
     acl is_holberton hdr(host) -i www.futurecoders.tech
     use_backend www-backend if is_root is_holberton
