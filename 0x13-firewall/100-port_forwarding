@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# Port Forwarding configuration for UFW (Uncomplicated Firewall)
+# Redirects incoming traffic on port 8080/TCP to port 80/TCP
+
+# nat Table rules
+*nat
+:PREROUTING ACCEPT [0:0]
+-A PREROUTING -p tcp --dport 8080 -j REDIRECT --to-port 80
+COMMIT
