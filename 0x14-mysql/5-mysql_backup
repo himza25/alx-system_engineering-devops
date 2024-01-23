@@ -1,23 +1,25 @@
-#!/usr/bin/env bash
-# This script creates a backup of all MySQL databases
+#!/bin/bash
 
-# Check if a password is provided as an argument
+# Check if the password is provided
 if [ $# -eq 0 ]; then
-    echo "Please provide the MySQL root password as an argument."
+    echo "Usage: $0 <MySQL Root Password>"
     exit 1
 fi
 
+# Variables
 PASSWORD=$1
 DATE=$(date +%d-%m-%Y)
 BACKUP_FILE="backup.sql"
+ARCHIVE_FILE="${DATE}.tar.gz"
 
-# Create a MySQL dump
-mysqldump -u root -p"$PASSWORD" --all-databases > $BACKUP_FILE
+# Create a MySQL dump of all databases
+mysqldump -u root -p"$PASSWORD" --all-databases > "$BACKUP_FILE"
 
 # Compress the dump file
-tar -czf "$DATE.tar.gz" $BACKUP_FILE
+tar -czf "$ARCHIVE_FILE" "$BACKUP_FILE"
 
-# Optional: Remove the original SQL file
-rm $BACKUP_FILE
+# Remove the original SQL file
+rm "$BACKUP_FILE"
 
-echo "Backup created: $DATE.tar.gz"
+# Feedback to the user
+echo "Backup created: $ARCHIVE_FILE"
