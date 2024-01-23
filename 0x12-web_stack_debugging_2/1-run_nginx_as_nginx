@@ -1,16 +1,22 @@
 #!/usr/bin/env bash
 # Script to configure Nginx to run as nginx user and listen on port 8080
 
-# Check if nginx user exists, if not create it
+# Ensure the nginx user exists
 if ! id "nginx" &>/dev/null; then
     useradd -r nginx
 fi
 
-# Modify Nginx to listen on port 8080
-sed -i 's/listen 80;/listen 8080;/g' /etc/nginx/sites-available/default
+# Update Nginx configuration to use nginx user and listen on port 8080
+sed -i 's/#user www-data/user nginx/' /etc/nginx/nginx.conf
+sed -i 's/listen [^ ]*;/listen 8080;/' /etc/nginx/sites-available/default
 
-# Ensure nginx runs as nginx user
-sed -i 's/user www-data;/user nginx;/g' /etc/nginx/nginx.conf
+# Set appropriate permissions for Nginx configuration file
+chmod 644 /etc/nginx/nginx.conf
+
+# Check and stop Apache2 if it's running to avoid conflicts
+if pgrep apache2; then
+    pkill apache2
+fi
 
 # Restart Nginx to apply changes
 service nginx restart
