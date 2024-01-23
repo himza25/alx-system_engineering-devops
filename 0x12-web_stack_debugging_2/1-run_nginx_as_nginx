@@ -16,4 +16,4 @@ if pgrep apache2; then
 fi
 
 # Restart Nginx to apply changes, using nginx user
-sudo -u nginx nginx -s reload
+sudo -u nginx service nginx start
