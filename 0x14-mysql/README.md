@@ -1,4 +1,4 @@
-# MySQL Project - alx-system_engineering-devops
+# 0x14. MySQL
 
 This repository contains a series of tasks related to setting up and managing MySQL servers, including replication and backup strategies.
 
