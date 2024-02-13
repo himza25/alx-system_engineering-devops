@@ -1,20 +1,16 @@
 #!/usr/bin/python3
-"""Module to query Reddit API for subreddit subscriber count."""
+"""Function to query subscribers on a given Reddit subreddit."""
 import requests
 
 
 def number_of_subscribers(subreddit):
-    """Return number of subscribers for a subreddit."""
-    url = 'https://www.reddit.com/r/{}/about.json'.format(subreddit)
+    """Return the total number of subscribers on a given subreddit."""
+    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
     headers = {
-        'User-Agent': ('Python:subreddit.subscriber.counter:v1.0 '
-                       '(by /u/yourusername)')
+        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/bdov_)"
     }
     response = requests.get(url, headers=headers, allow_redirects=False)
-
-    if response.status_code == 200:
-        try:
-            return response.json()['data']['subscribers']
-        except (KeyError, ValueError):
-            return 0
-    return 0
+    if response.status_code == 404:
+        return 0
+    results = response.json().get("data")
+    return results.get("subscribers")
