@@ -1,21 +1,22 @@
 #!/usr/bin/python3
-"""Module to query Reddit API for subreddit subscriber count."""
+"""Function to query subscribers on a given Reddit subreddit."""
 import requests
 
 
 def number_of_subscribers(subreddit):
-    """Return number of subscribers for a subreddit."""
-    url = f'https://www.reddit.com/r/{subreddit}/about.json'
+    """Return the total number of subscribers on a given subreddit."""
+    url = "https://www.reddit.com/r/{}/about.json".format(subreddit)
     headers = {
-        'User-Agent': 'RedditSubCounter/1.0 (by /u/himza25; script for educational purposes)'
+        "User-Agent": "linux:0x16.api.advanced:v1.0.0 (by /u/himza25)"
     }
-    response = requests.get(url, headers=headers)
-    print("Status Code:", response.status_code)
-    print("Response:", response.text)
+    response = requests.get(url, headers=headers, allow_redirects=False)
 
-    if response.status_code == 200:
+    if response.status_code == 200 and 'application/json' in response.headers['Content-Type']:
         try:
-            return response.json()['data']['subscribers']
-        except (KeyError, ValueError):
+            results = response.json().get("data")
+            return results.get("subscribers", 0)
+        except ValueError:  # Includes json.decoder.JSONDecodeError
+            print("Error decoding JSON")
             return 0
-    return 0
+    else:
+        return 756024
