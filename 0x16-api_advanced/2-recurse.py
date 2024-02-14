@@ -1,28 +1,28 @@
 #!/usr/bin/python3
-"""
-Using reddit's API
-"""
+"""Module to recursively query Reddit API for all hot article titles of a subreddit."""
 import requests
-after = None
 
+def recurse(subreddit, hot_list=[], after=None):
+    """Recursively collects titles of all hot articles for a given subreddit."""
+    url = f'https://www.reddit.com/r/{subreddit}/hot.json'
+    headers = {'User-Agent': 'MyRedditRecursiveScraper/1.0 (by /u/yourRedditUsername)'}
+    params = {'limit': 100, 'after': after}  # Use pagination
 
-def recurse(subreddit, hot_list=[]):
-    """returning top ten post titles recursively"""
-    global after
-    user_agent = {'User-Agent': 'api_advanced-project'}
-    url = "https://www.reddit.com/r/{}/hot.json".format(subreddit)
-    parameters = {'after': after}
-    results = requests.get(url, params=parameters, headers=user_agent,
-                           allow_redirects=False)
+    response = requests.get(url, headers=headers, params=params, allow_redirects=False)
 
-    if results.status_code == 200:
-        after_data = results.json().get("data").get("after")
-        if after_data is not None:
-            after = after_data
-            recurse(subreddit, hot_list)
-        all_titles = results.json().get("data").get("children")
-        for title_ in all_titles:
-            hot_list.append(title_.get("data").get("title"))
+    if response.status_code != 200:
+        return None
+
+    try:
+        data = response.json()
+        posts = data['data']['children']
+        for post in posts:
+            hot_list.append(post['data']['title'])
+
+        after = data['data'].get('after')  # Use .get to safely handle absence of 'after'
+        if after is not None:
+            return recurse(subreddit, hot_list, after)
         return hot_list
-    else:
-        return (None)
+    except ValueError:
+        # Catch JSON decode error
+        return None
