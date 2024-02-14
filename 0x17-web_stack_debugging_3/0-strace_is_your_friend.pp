@@ -1,20 +1,14 @@
 # 0-strace_is_your_friend.pp
-# Puppet manifest to debug and fix a 500 error in a Wordpress installation
+# Puppet manifest to debug and fix a 500 error in a WordPress installation
 
-$file_path = '/var/www/html/wp-config.php'
+# Define the file path to the WordPress configuration file
+$file_to_edit = '/var/www/html/wp-config.php'
 
-# Ensure the wp-config.php file exists
-if $::kernel == 'Linux' and $::operatingsystem == 'Ubuntu' {
-  file { $file_path:
-    ensure  => file,
-    require => Package['wordpress'],
-  }
-
-  # Hypothetical fix: Correct a typo or misconfiguration detected by strace
-  # Replace 'DB_HOST', 'localhostt' with 'DB_HOST', 'localhost'
-  exec { 'correct_db_host':
-    command => "sed -i 's/DB_HOST', 'localhostt'/DB_HOST', 'localhost'/g' ${file_path}",
-    path    => ['/bin', '/usr/bin'],
-    onlyif  => "grep -q 'DB_HOST', 'localhostt' ${file_path}",
-  }
+# Hypothetical fix: Correct a typo or misconfiguration detected by strace
+# Example: Replacing an incorrect database setting 'DB_PASWORD' with 'DB_PASSWORD'
+exec { 'correct_wp_config_typo':
+  command => "sed -i 's/DB_PASWORD/DB_PASSWORD/g' ${file_to_edit}",
+  path    => ['/bin', '/usr/bin'],
+  # Ensure this exec only runs if the incorrect string is found in the wp-config.php file
+  onlyif  => "grep -q 'DB_PASWORD' ${file_to_edit}",
 }
