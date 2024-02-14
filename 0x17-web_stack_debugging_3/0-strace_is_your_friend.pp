@@ -1,15 +1,10 @@
-# 0-strace_is_your_friend.pp
-# Fixes issue causing Apache to return a 500 error on WordPress site
+# A puppet manuscript to replace a line in a file on a server
 
-exec { 'fix-permission':
-  command => 'chown www-data:www-data /var/www/html/wp-config.php',
-  path    => ['/bin', '/usr/bin'],
-  onlyif  => 'test -f /var/www/html/wp-config.php',
-  before  => Service['apache2'],
-}
+$file_to_edit = '/var/www/html/wp-settings.php'
 
-service { 'apache2':
-  ensure    => running,
-  enable    => true,
-  subscribe => Exec['fix-permission'],
+#replace line containing "phpp" with "php"
+
+exec { 'replace_line':
+  command => "sed -i 's/phpp/php/g' ${file_to_edit}",
+  path    => ['/bin','/usr/bin']
 }
