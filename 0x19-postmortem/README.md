@@ -26,14 +26,14 @@ To prevent future occurrences of such issues, the following measures have been p
 5. **Community Engagement**: Establish relationships with API providers to support educational projects.
 
 ## Visualization of the Issue and Resolution Process
-![Reddit API Connectivity Issue Resolution Process](https://www.awesomescreenshot.com/image/46092935?key=36cc9e4bf9edec06a4efccb9895024a4)
+![Reddit API Connectivity Issue Resolution Process](https://ibb.co/TBQ8Jcg)
 
 *This diagram illustrates the step-by-step process taken to resolve the Reddit API connectivity issue, from initial detection through to the successful resolution.*
 
 ## Humorous Take
 To lighten the mood and add a bit of humor to our postmortem, here's a meme reflecting our journey through the Reddit API connectivity issue:
 
-![Humor in Troubleshooting](https://www.awesomescreenshot.com/image/46092935?key=36cc9e4bf9edec06a4efccb9895024a4)
+![Humor in Troubleshooting](https://ibb.co/TBQ8Jcg)
 
 *"I asked for subscribers, not mysteries!"*
 
