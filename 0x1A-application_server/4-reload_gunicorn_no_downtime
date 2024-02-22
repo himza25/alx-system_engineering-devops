@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Script to gracefully reload Gunicorn without service interruption
+
+# Find the PID of the Gunicorn master process using pgrep
+PID=$(pgrep -f 'gunicorn: master \[web_dynamic.2-hbnb\]')
+
+if [ -z "$PID" ]; then
+    echo "Gunicorn master process not found"
+else
+    # Send the HUP signal to gracefully reload, quoting the variable to handle spaces
+    echo "Reloading Gunicorn master process (PID: $PID)"
+    kill -HUP "$PID"
+fi
