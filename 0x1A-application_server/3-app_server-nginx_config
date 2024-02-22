@@ -35,8 +35,8 @@ server {
         alias /data/web_static/current/;
     }
 
-    # new configuration for /airbnb-dynamic/number_odd_or_even/
-    location ~ ^/airbnb-dynamic/number_odd_or_even/(\d+)$ {
+    # Adjusted configuration for /airbnb-dynamic/number_odd_or_even/
+    location /airbnb-dynamic/number_odd_or_even/ {
         proxy_pass http://localhost:5001;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
