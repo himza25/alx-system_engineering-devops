@@ -1,14 +1,19 @@
-# This manuscript increases the amount of traffic an Nginx server can handle
+# This Puppet manifest enhances the traffic handling capacity of an Nginx server
+# by increasing file ULIMITs and ensuring Nginx operates with these new limits.
 
-# Increase the ULIMIT of the default file
 file { 'fix-for-nginx':
-  ensure  => 'file',
+  ensure  => file,
   path    => '/etc/default/nginx',
-  content => inline_template('<%= File.read("/etc/default/nginx").gsub(/15/, "4096") %>'),
+  # Split the inline_template for better readability
+  content => inline_template('<%= 
+    File.read("/etc/default/nginx")
+    .gsub(/ULIMIT="-n 1024"/, "ULIMIT=\"-n 4096\"") 
+  %>'),
+  notify  => Exec['nginx-restart'],
 }
 
-# Restart Nginx
--> exec { 'nginx-restart':
-  command => 'nginx restart',
-  path    => '/etc/init.d/',
+exec { 'nginx-restart':
+  command     => '/etc/init.d/nginx restart',
+  path        => '/usr/bin:/usr/sbin:/bin',
+  refreshonly => true, # Only run this exec when notified
 }
